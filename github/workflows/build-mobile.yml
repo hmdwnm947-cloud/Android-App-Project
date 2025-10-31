@@ -1,0 +1,38 @@
+# اسم العملية
+name: Build Flet Mobile App
+
+# تحديد متى يتم تشغيل هذا الـ Action
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+# تحديد المهام
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Flet Mobile Builder
+        # يستخدم هذا الـ Action المخصص لتحويل تطبيقات Flet
+        uses: flet-dev/flet-action@v1
+        with:
+          # اسم ملف البايثون الرئيسي (يجب أن يكون main.py في حالتك)
+          script: main.py
+          # تحديد المنصات التي تريد بناءها
+          # mobile: لبناء Android APK, Android AAB, و iOS IPA
+          platforms: mobile
+          # إذا كنت لا تحتاج iOS، يمكنك تغييرها إلى 'android' فقط
+          # platforms: android
+          
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: flet-app-build
+          path: |
+            build/app.*
+            build/flet-app.*
